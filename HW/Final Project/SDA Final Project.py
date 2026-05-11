@@ -132,6 +132,9 @@ plt.show()
 # 6. Bootstrap resampling per period bin
 logR, logP, sigma = [], [], []
 
+fig, ax = plt.subplots(2, 2, figsize=(15, 10))
+subplot_indices = [(0, 0), (0, 1), (1, 0), (1, 1)]
+
 for bin_index in range(len(period_bins) - 1):
     p_bounds = period_bins[bin_index: bin_index + 2]
 
@@ -165,17 +168,22 @@ for bin_index in range(len(period_bins) - 1):
     logR.append(median)
     sigma.append((p84 - p16) / 2)
 
-    plt.hist(bin_bootstrap_valleys, bins=30, density=True, alpha=0.5, edgecolor='black')
-    plt.axvline(p16, color='red', linestyle='--', label=f'16th percentile: {10**p16:.2f} $R_\oplus$')
-    plt.axvline(median, color='blue', linestyle='-', label=f'Median: {10**median:.2f} $R_\oplus$')
-    plt.axvline(p84, color='red', linestyle='--', label=f'84th percentile: {10**p84:.2f} $R_\oplus$')
-    plt.xlabel('log(R_valley) (log Earth radii)')
-    plt.ylabel('Density')
-    plt.title(f'Bootstrap Distribution of log(R_valley), bin {bin_index + 1}')
-    plt.legend()
-    plt.savefig(path + f'Bootstrap Distribution of log(R_valley)_bin_{bin_index + 1}.pdf')
-    plt.show()
+    ax_idx = subplot_indices[bin_index]
+    ax[ax_idx].hist(bin_bootstrap_valleys, bins=30, density=True, alpha=0.5, edgecolor='black')
+    ax[ax_idx].axvline(p16, color='red', linestyle='--', label=f'16th percentile: {10**p16:.2f} $R_\oplus$')
+    ax[ax_idx].axvline(median, color='blue', linestyle='-', label=f'Median: {10**median:.2f} $R_\oplus$')
+    ax[ax_idx].axvline(p84, color='red', linestyle='--', label=f'84th percentile: {10**p84:.2f} $R_\oplus$')
+    ax[ax_idx].set_xlabel('log(R_valley) (log Earth radii)')
+    ax[ax_idx].set_ylabel('Density')
+    ax[ax_idx].set_title(f'bin {bin_index + 1}, {p_bounds[0]:.2f} - {p_bounds[1]:.2f} days')
+    ax[ax_idx].legend()
+    ax[ax_idx].set_xlim(0, 0.6)
+    ax[ax_idx].grid()
 
+fig.suptitle('Bootstrap Distributions of log(R_valley) for Each Period Bin')
+plt.tight_layout()
+plt.savefig('Bootstrap Distributions of log(R_valley) for Each Period Bin subplot.pdf')
+plt.show()
 
 logP = np.array(logP)
 logR = np.array(logR)
