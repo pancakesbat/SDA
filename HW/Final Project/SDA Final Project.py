@@ -3,7 +3,6 @@ import numpy as np
 from astropy.io import ascii
 from scipy.signal import find_peaks
 from scipy import stats
-from scipy import optimize
 plt.rcParams["figure.figsize"] = (10, 5)
 plt.rcParams["xtick.minor.visible"] = True
 plt.rcParams["ytick.minor.visible"] = True
